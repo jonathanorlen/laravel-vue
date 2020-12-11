@@ -18,6 +18,10 @@
     <body class="antialiased">
         <main id="orlen">
             <Navigation></Navigation>
+            <div class="py-4">
+                <router-view>
+                </router-view>
+            </div>
         </main>
     </body>
     <script src="/js/app.js"></script>
