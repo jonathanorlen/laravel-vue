@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Note;
 use Illuminate\Http\Request;
+use App\Models\{Note, Subject};
+use Str;
 
 class NoteController extends Controller
 {
@@ -34,8 +35,25 @@ class NoteController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {   
+        $this->validate($request,[
+            'subject' => 'required',
+            'title' => 'required|min:6',
+            'description' => 'required',
+        ]);
+
+        $subject = Subject::findOrFail($request->subject);
+        $notes = Note::create([
+            'subject_id' => $subject->id,
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'description' => $request->description
+        ]);
+
+        return response()->json([
+            'message' => 'Your note was created',
+            'note' => $notes
+        ]);
     }
 
     /**
