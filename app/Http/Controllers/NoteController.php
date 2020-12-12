@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{Note, Subject};
+use App\Http\Resources\NoteResource;
 use Str;
 
 class NoteController extends Controller
@@ -14,8 +15,9 @@ class NoteController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
+    {   
+        $notes = Note::with('subject')->latest()->get();
+        return NoteResource::collection($notes);
     }
 
     /**
@@ -64,7 +66,7 @@ class NoteController extends Controller
      */
     public function show(Note $note)
     {
-        //
+        return new NoteResource($note);
     }
 
     /**
