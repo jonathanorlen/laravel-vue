@@ -65,7 +65,7 @@ class NoteController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Note $note)
-    {
+    {   
         return new NoteResource($note);
     }
 
@@ -77,7 +77,7 @@ class NoteController extends Controller
      */
     public function edit(Note $note)
     {
-        //
+        return $note;
     }
 
     /**
@@ -89,7 +89,24 @@ class NoteController extends Controller
      */
     public function update(Request $request, Note $note)
     {
-        //
+        $this->validate($request,[
+            'subject' => 'required',
+            'title' => 'required|min:6',
+            'description' => 'required',
+        ]);
+
+        $subject = Subject::findOrFail($request->subject);
+        $note->update([
+            'subject_id' => $subject->id,
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'description' => $request->description
+        ]);
+
+        return response()->json([
+            'message' => 'Your note was update',
+            'note' => $notes
+        ]);
     }
 
     /**

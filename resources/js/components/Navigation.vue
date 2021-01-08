@@ -21,7 +21,8 @@
                     Note
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <router-link class="dropdown-item" :to="{name:'note.create'}">Create note</router-link>
+                        <router-link class="dropdown-item" exact :to="{name:'note.create'}">Create note</router-link>
+                        <router-link class="dropdown-item" exact  :to="{name:'note.table'}">Table note</router-link>
                         <a class="dropdown-item" href="#">Another action</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">Something else here</a>

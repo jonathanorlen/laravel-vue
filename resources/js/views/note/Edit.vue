@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+     <div class="container">
        <div class="row">
           <div class="alert alert-success" v-if="success">
                                 {{ success }}
@@ -8,7 +8,7 @@
                  <div class="card">
                       <div class="card-header">New Notes</div>
                       <div class="card-body">
-                           <form action="" method="post" @submit.prevent="store">
+                           <form action="" method="post" @submit.prevent="update">
                                 <div class="form-group">
                                    <label class="title">Title</label>
                                    <input type="text" v-model="form.title" id="" class="form-control">
@@ -18,11 +18,13 @@
                                 </div>
                                 <div class="form-group">
                                      <label class="title">Subject</label>
-                                     <select class="form-control" v-model="form.subject" id="">
-                                          <!-- <option value="">Choose</option> -->
-                                          <option v-for="subject in subjects" :value="subject.id" :key="subject.id">
-                                               {{ subject.name }}
-                                          </option>
+                                     <select @change="selectedSubject" class="form-control" id="">
+                                          <option :value="form.subjectId" v-text="form.subject"></option>
+                                          <template v-for="subject in subjects">
+                                             <option v-if="form.subjectId !== subject.id" :value="subject.id" :key="subject.id">
+                                                  {{ subject.name }}
+                                             </option>
+                                          </template>
                                      </select>
                                      <div class="text-danger mt-2" v-if="errors.subject">
                                         {{ errors.subject[0]}}
@@ -48,19 +50,17 @@
 export default {
      data() {
           return {
-               form: {
-                    title: '',
-                    description: '',
-                    subject: ''
-               },
+               form: {},
                success: '',
                subjects: [],
-               errors: []
+               errors: [],
+               selected: ''
           }
      },
 
      mounted(){
           this.getSubjects();
+          this.getNote();
      }, 
 
      methods: {
@@ -71,26 +71,30 @@ export default {
                }
           },
 
-          async store() {
-               axios.post('/api/notes/create-new-note', this.form)
-               .then( res => {     
-                    if(res.status == 200){
-                         this.form.title = ""
-                         this.form.decoration = ""
-                         this.form.title = ""
-                         this.errors = ""
-                         this.$toasted.show(res.data.message, {
+          async getNote() {
+               let response = await axios.get(`http://127.0.0.1:8000/api/notes/${this.$route.params.slug}`);
+               this.form = response.data.data
+               console.log(response.data.data)
+          },
+
+          async update(){
+               let response = await axios.patch(`/api/notes/${this.$route.params.slug}/edit`, this.form)
+               if(response == 200)
+               {
+                    this.$toasted.show('Note Updated', {
                               type: 'success',
                               duration: 3000
                          })
-                    }
-               }).catch(err => {
+               }else{
                     this.$toasted.show('Something went wrong', {
                               type: 'error',
                               duration: 3000
                          })
-                    this.errors = err.response.data.errors
-               })
+               }
+          },
+
+          selectedSubject(e){
+               this.form['subjectId'] = e.target.value || this.form.subjectId;
           }
      }
 }
