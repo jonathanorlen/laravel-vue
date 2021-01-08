@@ -95,7 +95,7 @@ class NoteController extends Controller
             'description' => 'required',
         ]);
 
-        $subject = Subject::findOrFail($request->subject);
+        $subject = Subject::findOrFail($request->subjectId);
         $note->update([
             'subject_id' => $subject->id,
             'title' => $request->title,
@@ -105,7 +105,7 @@ class NoteController extends Controller
 
         return response()->json([
             'message' => 'Your note was update',
-            'note' => $notes
+            'note' => $note
         ]);
     }
 
@@ -117,6 +117,10 @@ class NoteController extends Controller
      */
     public function destroy(Note $note)
     {
-        //
+        $note->delete();
+
+        return response()->json([
+            'message' => 'Your note was deleted',
+        ], 200);
     }
 }

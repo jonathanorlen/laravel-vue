@@ -37,7 +37,7 @@
                                         {{ errors.description[0]}}
                                    </div>
                                 </div>
-                                <button type="submit">Submit</button>
+                                <button type="submit">Update</button>
                            </form>
                       </div>
                  </div>
@@ -78,8 +78,9 @@ export default {
           },
 
           async update(){
-               let response = await axios.patch(`/api/notes/${this.$route.params.slug}/edit`, this.form)
-               if(response == 200)
+               console.log("update")
+               let response = await axios.put(`http://127.0.0.1:8000/api/notes/edit/${this.$route.params.slug}`, this.form)
+               if(response.status == 200)
                {
                     this.$toasted.show('Note Updated', {
                               type: 'success',
@@ -90,6 +91,7 @@ export default {
                               type: 'error',
                               duration: 3000
                          })
+                    this.$route.push('/notes/table')
                }
           },
 

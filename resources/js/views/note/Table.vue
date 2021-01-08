@@ -18,6 +18,7 @@
                          <td>{{note.published}}</td>
                          <td>
                               <router-link :to="{name: 'note.edit',params:{slug: note.slug}}" class="btn btn-success">Edit</router-link>
+                              <DeleteNote :endpoint="note.slug"/>
                          </td>
                     </tr>
                </tbody>
@@ -26,7 +27,11 @@
 </template>
 
 <script>
+import DeleteNote from './Delete'
 export default {
+     components: {
+          'DeleteNote': DeleteNote
+     },
      data(){
           return {
                notes: []
